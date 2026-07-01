@@ -24,16 +24,20 @@ public class SpaWebConfig implements WebMvcConfigurer {
                 .addResolver(new PathResourceResolver() {
                     @Override
                     protected Resource getResource(String resourcePath, Resource location) throws IOException {
-                        if (resourcePath.startsWith("api/")
-                                || resourcePath.startsWith("uploads/")
-                                || resourcePath.contains(".")) {
+                        if (resourcePath.startsWith("api/") || resourcePath.startsWith("uploads/")) {
                             return null;
+                        }
+                        if (resourcePath.isEmpty()) {
+                            return location.createRelative("index.html");
                         }
                         Resource requested = location.createRelative(resourcePath);
                         if (requested.exists() && requested.isReadable()) {
                             return requested;
                         }
-                        return location.createRelative("index.html");
+                        if (!resourcePath.contains(".")) {
+                            return location.createRelative("index.html");
+                        }
+                        return null;
                     }
                 });
     }
