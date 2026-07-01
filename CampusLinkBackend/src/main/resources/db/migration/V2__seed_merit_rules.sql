@@ -1,0 +1,22 @@
+INSERT INTO merit_rule (programme_level, role_type, merit_points) VALUES
+('International', 'DIRECTOR', 200),
+('International', 'MT', 150),
+('International', 'AJK', 100),
+('International', 'PARTICIPANT', 50),
+('National', 'DIRECTOR', 150),
+('National', 'MT', 100),
+('National', 'AJK', 80),
+('National', 'PARTICIPANT', 30),
+('State', 'DIRECTOR', 100),
+('State', 'MT', 80),
+('State', 'AJK', 60),
+('State', 'PARTICIPANT', 20),
+('University', 'DIRECTOR', 80),
+('University', 'MT', 60),
+('University', 'AJK', 40),
+('University', 'PARTICIPANT', 10),
+('Faculty/Club', 'DIRECTOR', 50),
+('Faculty/Club', 'MT', 40),
+('Faculty/Club', 'AJK', 30),
+('Faculty/Club', 'PARTICIPANT', 5)
+ON DUPLICATE KEY UPDATE merit_points = VALUES(merit_points);

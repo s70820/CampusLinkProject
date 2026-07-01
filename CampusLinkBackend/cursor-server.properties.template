@@ -1,0 +1,12 @@
+# Copy this file to the CURSOR server as:
+#   /home/s70820/.conf/campuslink.properties
+# (File Manager → open .conf folder → Upload or create File)
+#
+# Replace YOUR_MYSQL_PASSWORD with the password for s70820_cluser.
+
+spring.profiles.active=prod
+spring.datasource.username=s70820_cluser
+spring.datasource.password=CampusLink0915!
+spring.datasource.url=jdbc:mysql://localhost:3306/s70820_cplink?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+app.frontend.url=https://s70820.cursor.umt.edu.my
+app.upload.base-dir=/home/s70820/uploads

@@ -1,0 +1,17 @@
+# TASK 2 (manual): configure DB before building WAR — same idea as editing the JSP connection file.
+# 1. Copy this file to: src/main/resources/cursor-deploy.properties
+# 2. Replace YOUR_MYSQL_PASSWORD
+# 3. Run: mvn clean package -Pwith-frontend -DskipTests
+# 4. Upload target/s70820.war to File Manager at /
+
+spring.profiles.active=prod
+spring.datasource.username=s70820_cluser
+spring.datasource.password=YOUR_MYSQL_PASSWORD
+spring.datasource.url=jdbc:mysql://localhost:3306/s70820_cplink?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+app.frontend.url=https://s70820.cursor.umt.edu.my
+app.upload.base-dir=/home/s70820/uploads
+
+# Gmail SMTP for password reset at exhibition (optional — add App Password from Google Account)
+# spring.mail.username=sarahdemo335@gmail.com
+# spring.mail.password=YOUR_16_CHAR_GMAIL_APP_PASSWORD
+# app.mail.from=sarahdemo335@gmail.com

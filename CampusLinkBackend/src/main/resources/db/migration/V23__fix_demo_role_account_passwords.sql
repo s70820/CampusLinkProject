@@ -1,0 +1,2 @@
+-- V18 mistakenly reused Sarah's bcrypt hash (password: sarah123) for demo role accounts.
+-- Runtime bootstrap resets these to demo123; this comment documents the intended password.

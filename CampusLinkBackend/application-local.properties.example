@@ -1,0 +1,16 @@
+# Copy to application-local.properties (gitignored) for local Gmail SMTP.
+# Generate App Password: https://myaccount.google.com/apppasswords (2-Step Verification required)
+#
+# Demo exhibition accounts (use ONE as the sender; both can receive reset emails):
+#   sarahdemo335@gmail.com  — primary sender (already used in earlier tests)
+#   amiruldemo0@gmail.com   — backup demo inbox
+#
+# Gmail sends FROM spring.mail.username TO any registered CampusLink+ user email.
+
+spring.mail.username=sarahdemo335@gmail.com
+spring.mail.password=YOUR_16_CHAR_GMAIL_APP_PASSWORD
+app.mail.from=sarahdemo335@gmail.com
+app.frontend.url=http://localhost:3000
+
+# Optional: override for exhibition deploy
+# app.frontend.url=https://s70820.cursor.umt.edu.my/s70820

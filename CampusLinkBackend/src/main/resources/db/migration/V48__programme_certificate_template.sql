@@ -1,0 +1,3 @@
+ALTER TABLE programme
+    ADD COLUMN certificate_template VARCHAR(30) NOT NULL DEFAULT 'CLASSIC_GOLD',
+    ADD COLUMN certificate_orientation VARCHAR(20) NOT NULL DEFAULT 'LANDSCAPE';
