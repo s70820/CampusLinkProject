@@ -1,0 +1,9 @@
+**/node_modules
+**/target
+**/.git
+**/.idea
+**/build
+**/uploads
+demo
+*.md
+!CampusLinkBackend/DEPLOYMENT_KEROCKET.md
