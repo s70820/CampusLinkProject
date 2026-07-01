@@ -170,6 +170,11 @@ Open http://localhost:8080
 | App 404 | Check Build output; Tomcat may not have started — often DB/JNDI misconfig |
 | DB connection error | Check `MYSQLHOST` / `DATABASE_URL` in Settings; import SQL |
 | Login works locally, not on Kerocket | Re-import SQL; check `user` table has demo accounts |
+| Login returns **403 Forbidden** | Demo account role/approval corrupted after MySQL import — run `kerocket-fix-demo-login.sql` in Workbench, then **Restart** the Kerocket deploy so `DemoAccountPasswordBootstrap` resets passwords |
+| Login shows generic error but Network tab says 403 | Password matched but account is blocked (pending organizer/MPP, REMOVED, or missing club). Run the SQL fix above or use `hepa.demo@gmail.com` / `demo123` |
+| Login returns **401** | Wrong password — after restart, Sarah = `sarahdemo335@gmail.com` / `sarah123`, Amirul = `amirul.demo@gmail.com` / `amirul123` |
+| App shows "Starting your project…" / 503 | Kerocket slept — open the site once and wait ~30s for wake, then retry login |
+| **Error 524** timeout | App still starting (Tomcat + Spring can take 1–2 min on cold start). Wait 90s and refresh. **Remove `PORT=3000`** from Kerocket env if set. Redeploy after startup optimizations in latest code. |
 | Uploads disappear after redeploy | Expected with `/tmp` — use object storage or persistent volume if Kerocket offers it |
 | CORS errors | Only if frontend is hosted separately — bundled WAR avoids this |
 

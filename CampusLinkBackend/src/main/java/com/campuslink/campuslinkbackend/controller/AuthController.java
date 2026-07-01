@@ -73,7 +73,11 @@ public class AuthController {
                         .body(Map.of("message", loginBlock));
             }
 
-            user = roleRequestService.syncUserRoleFromApprovals(user);
+            try {
+                user = roleRequestService.syncUserRoleFromApprovals(user);
+            } catch (RuntimeException ex) {
+                // Do not block sign-in when stale role-request rows exist after manual DB imports.
+            }
 
             String token = jwtUtil.generateToken(user);
             Map<String, Object> body = new HashMap<>();

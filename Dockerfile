@@ -18,7 +18,12 @@ FROM tomcat:9.0-jre17-temurin
 
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-COPY --from=build /build/CampusLinkBackend/target/s70820.war /usr/local/tomcat/webapps/ROOT.war
+COPY --from=build /build/CampusLinkBackend/target/s70820.war /tmp/ROOT.war
+# Exploded WAR starts faster on Kerocket (avoids unpack timeout / Cloudflare 524 on cold start).
+RUN mkdir -p /usr/local/tomcat/webapps/ROOT \
+    && cd /usr/local/tomcat/webapps/ROOT \
+    && jar -xf /tmp/ROOT.war \
+    && rm /tmp/ROOT.war
 
 COPY CampusLinkBackend/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN sed -i 's/\r$//' /usr/local/bin/docker-entrypoint.sh \

@@ -106,5 +106,8 @@ cat > "${CATALINA_HOME}/conf/Catalina/localhost/ROOT.xml" <<EOF
 EOF
 
 export JAVA_OPTS="${JAVA_OPTS:-} -Dspring.profiles.active=kerocket"
+export CATALINA_OPTS="${CATALINA_OPTS:-} -Xms256m -Xmx768m -XX:+UseSerialGC -Djava.awt.headless=true"
+
+echo "CampusLink: Tomcat HTTP port=${HTTP_PORT}" >&2
 
 exec "$@"

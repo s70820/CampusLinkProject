@@ -70,7 +70,18 @@ const Login = () => {
       const portal = initializePortalOnLogin(userRole);
       navigate(getPortalDashboardPath(portal));
     } catch (err) {
-      const message = err.response?.data?.message || 'Invalid email or password. Please try again.';
+      const payload = err.response?.data;
+      const serverMessage = typeof payload === 'string' ? payload : payload?.message;
+      let message = serverMessage;
+      if (!message) {
+        if (err.response?.status === 403) {
+          message = 'This account cannot sign in yet (pending approval or removed). Try a student demo account or contact HEPA.';
+        } else if (err.response?.status === 401) {
+          message = 'Invalid email or password. Please try again.';
+        } else {
+          message = 'Unable to sign in right now. Please wait a moment and try again.';
+        }
+      }
       setError(message);
       triggerError();
     } finally {

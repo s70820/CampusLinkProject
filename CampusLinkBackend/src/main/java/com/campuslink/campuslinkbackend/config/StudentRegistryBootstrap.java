@@ -6,6 +6,7 @@ import com.campuslink.campuslinkbackend.service.StudentLookupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
  * Prototype only — production should use UMT SSO instead of manual registry sync.
  */
 @Component
+@Profile("!kerocket")
 public class StudentRegistryBootstrap implements ApplicationRunner {
 
     @Autowired

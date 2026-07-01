@@ -6,8 +6,10 @@ import com.campuslink.campuslinkbackend.service.PasswordService;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -15,7 +17,7 @@ import java.util.Map;
 
 /**
  * Ensures seeded demo accounts use known passwords for FYP presentations.
- * V18 reused a BCrypt hash that actually matches {@code sarah123} for role accounts.
+ * On Kerocket, uses a fast repair-only path (no BCrypt) to avoid Cloudflare 524 timeouts on cold start.
  */
 @Component
 @Order(0)
@@ -55,37 +57,121 @@ public class DemoAccountPasswordBootstrap implements ApplicationRunner {
 
     private final UserRepository userRepository;
     private final PasswordService passwordService;
+    private final Environment environment;
 
-    public DemoAccountPasswordBootstrap(UserRepository userRepository, PasswordService passwordService) {
+    public DemoAccountPasswordBootstrap(
+            UserRepository userRepository,
+            PasswordService passwordService,
+            Environment environment) {
         this.userRepository = userRepository;
         this.passwordService = passwordService;
+        this.environment = environment;
     }
 
     @Override
     public void run(ApplicationArguments args) {
-        String demoHash = passwordService.hashPassword(DEMO_PASSWORD);
-        for (String email : DEMO_ROLE_EMAILS) {
-            resetPasswordIfNeeded(email, DEMO_PASSWORD, demoHash);
+        if (isKerocketProfile()) {
+            runKerocketLightRepair();
+            return;
         }
-        for (Map.Entry<String, String> entry : STUDENT_DEMO_PASSWORDS.entrySet()) {
-            resetPasswordIfNeeded(entry.getKey(), entry.getValue(), passwordService.hashPassword(entry.getValue()));
-        }
-        for (int i = 1; i <= 30; i++) {
-            resetPasswordIfNeeded(String.format(Locale.ROOT, "s700%02d.demo@gmail.com", i), DEMO_PASSWORD, demoHash);
-        }
-        for (int i = 1; i <= 80; i++) {
-            resetPasswordIfNeeded(String.format(Locale.ROOT, "s701%02d.demo@gmail.com", i), DEMO_PASSWORD, demoHash);
-        }
-        resetPasswordIfNeeded("safwan.demo@gmail.com", DEMO_PASSWORD, demoHash);
+        runFullPasswordSync();
     }
 
-    private void resetPasswordIfNeeded(String email, String plainPassword, String hash) {
+    /** Fast path: repair roles only — passwords already correct after SQL import. */
+    private void runKerocketLightRepair() {
+        for (String email : DEMO_ROLE_EMAILS) {
+            repairDemoRoleAccount(email);
+        }
+        for (String email : STUDENT_DEMO_PASSWORDS.keySet()) {
+            repairDemoStudentAccount(email);
+        }
+        repairDemoStudentAccount("safwan.demo@gmail.com");
+    }
+
+    private void runFullPasswordSync() {
+        String demoHash = passwordService.hashPassword(DEMO_PASSWORD);
+        Map<String, String> studentHashes = new LinkedHashMap<>();
+        for (Map.Entry<String, String> entry : STUDENT_DEMO_PASSWORDS.entrySet()) {
+            studentHashes.put(entry.getKey(), passwordService.hashPassword(entry.getValue()));
+        }
+
+        for (String email : DEMO_ROLE_EMAILS) {
+            syncDemoAccount(email, DEMO_PASSWORD, demoHash, false);
+        }
+        for (Map.Entry<String, String> entry : STUDENT_DEMO_PASSWORDS.entrySet()) {
+            syncDemoAccount(entry.getKey(), entry.getValue(), studentHashes.get(entry.getKey()), true);
+        }
+        for (int i = 1; i <= 30; i++) {
+            syncDemoAccount(String.format(Locale.ROOT, "s700%02d.demo@gmail.com", i), DEMO_PASSWORD, demoHash, true);
+        }
+        for (int i = 1; i <= 80; i++) {
+            syncDemoAccount(String.format(Locale.ROOT, "s701%02d.demo@gmail.com", i), DEMO_PASSWORD, demoHash, true);
+        }
+        syncDemoAccount("safwan.demo@gmail.com", DEMO_PASSWORD, demoHash, true);
+    }
+
+    private void syncDemoAccount(String email, String plainPassword, String hash, boolean repairStudentFields) {
         User user = userRepository.findByEmailIgnoreCase(email.trim().toLowerCase(Locale.ROOT));
         if (user == null) {
             return;
         }
         if (!passwordService.matches(plainPassword, user.getPasswordHash())) {
             user.setPasswordHash(hash);
+            userRepository.save(user);
+        }
+        if (repairStudentFields) {
+            repairDemoStudentAccount(user);
+        } else {
+            repairDemoRoleAccount(email);
+        }
+    }
+
+    private boolean isKerocketProfile() {
+        return Arrays.stream(environment.getActiveProfiles())
+                .anyMatch(profile -> "kerocket".equalsIgnoreCase(profile));
+    }
+
+    private void repairDemoStudentAccount(String email) {
+        User user = userRepository.findByEmailIgnoreCase(email.trim().toLowerCase(Locale.ROOT));
+        if (user != null) {
+            repairDemoStudentAccount(user);
+        }
+    }
+
+    private void repairDemoStudentAccount(User user) {
+        boolean changed = false;
+        if (!"STUDENT".equalsIgnoreCase(user.getRole())) {
+            user.setRole("STUDENT");
+            changed = true;
+        }
+        if (!"APPROVED".equalsIgnoreCase(user.getApprovalStatus())) {
+            user.setApprovalStatus("APPROVED");
+            changed = true;
+        }
+        if (user.getClubId() != null) {
+            user.setClubId(null);
+            changed = true;
+        }
+        if (user.getClubName() != null && !user.getClubName().isBlank()) {
+            user.setClubName(null);
+            changed = true;
+        }
+        if (changed) {
+            userRepository.save(user);
+        }
+    }
+
+    private void repairDemoRoleAccount(String email) {
+        User user = userRepository.findByEmailIgnoreCase(email.trim().toLowerCase(Locale.ROOT));
+        if (user == null || user.getRole() == null) {
+            return;
+        }
+        String role = user.getRole().toUpperCase(Locale.ROOT);
+        if (!"ORGANIZER".equals(role) && !"MPP".equals(role) && !"HEPA".equals(role)) {
+            return;
+        }
+        if (!"APPROVED".equalsIgnoreCase(user.getApprovalStatus())) {
+            user.setApprovalStatus("APPROVED");
             userRepository.save(user);
         }
     }

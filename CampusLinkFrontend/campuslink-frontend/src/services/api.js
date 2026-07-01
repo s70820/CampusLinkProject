@@ -10,11 +10,13 @@ const api = axios.create({
   },
 });
 
-// Add token to requests if available
+// Add token to requests if available (never attach stale JWT to sign-in/register calls)
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('authToken');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  if (!isAuthAttemptRequest(config)) {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
   }
   if (config.data instanceof FormData) {
     delete config.headers['Content-Type'];

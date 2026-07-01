@@ -7,6 +7,7 @@ import com.campuslink.campuslinkbackend.util.DemoPdfWriter;
 import com.campuslink.campuslinkbackend.util.FacultyEndorsementLetterPdfWriter;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,7 @@ import java.util.List;
  * Creates CampusLink-branded demo PDFs under uploads/demo-docs for seeded review data.
  */
 @Component
+@Profile("!kerocket")
 @Order(2)
 public class DemoDocumentBootstrap implements ApplicationRunner {
 

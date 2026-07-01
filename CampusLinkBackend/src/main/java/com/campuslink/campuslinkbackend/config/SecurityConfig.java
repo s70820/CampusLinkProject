@@ -58,7 +58,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "https://cursor.umt.edu.my",
                 "https://cursor.umt.edu.my:*",
                 "https://*.umt.edu.my",
-                "https://*.umt.edu.my:*"
+                "https://*.umt.edu.my:*",
+                "https://*.kerocket.com"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));

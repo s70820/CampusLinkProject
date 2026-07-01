@@ -6,6 +6,7 @@ import java.util.List;
 public final class SecurityPaths {
 
     public static final List<String> PUBLIC_API = Arrays.asList(
+            "/api/health",
             "/api/login",
             "/api/auth/login",
             "/api/register",

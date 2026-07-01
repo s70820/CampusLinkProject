@@ -7,6 +7,7 @@ import com.campuslink.campuslinkbackend.repository.UserRepository;
 import com.campuslink.campuslinkbackend.service.PasswordService;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,7 @@ import java.util.Optional;
  * a Flyway migration was not applied yet (e.g. backend restart blocked by port 8080).
  */
 @Component
+@Profile("!kerocket")
 @Order(1)
 public class CommitteeDemoStudentBootstrap implements ApplicationRunner {
 
