@@ -1,0 +1,120 @@
+/* CampusLink+ App Shell — dark glass theme (matches auth pages) */
+
+:root {
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #cbd5e1;
+  --color-text-tertiary: #94a3b8;
+  --color-border: rgba(148, 163, 184, 0.2);
+  --color-bg-primary: rgba(15, 23, 42, 0.72);
+  --color-bg-secondary: rgba(30, 41, 59, 0.55);
+  --color-bg-tertiary: transparent;
+
+}
+
+/* Dark-theme portal tokens — scoped so student portal light theme is not overridden */
+.app-shell:not(.student-portal) {
+  --portal-primary: #60a5fa;
+  --portal-primary-dark: #3b82f6;
+  --portal-primary-soft: rgba(59, 130, 246, 0.18);
+  --portal-surface: rgba(15, 23, 42, 0.72);
+  --portal-surface-muted: rgba(30, 41, 59, 0.45);
+  --portal-border: rgba(148, 163, 184, 0.2);
+  --portal-text: #f8fafc;
+  --portal-text-muted: #cbd5e1;
+  --portal-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  --portal-shadow-hover: 0 16px 48px rgba(37, 99, 235, 0.25);
+}
+
+.app-shell {
+  position: relative;
+  min-height: 100vh;
+  color: #f8fafc;
+  background-color: #030712;
+}
+
+.app-shell__content {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+}
+
+/* Student portal uses StudentPortal.css — do not apply dark overrides here */
+
+/* Glass cards (organizer / admin dashboards) */
+.app-shell:not(.student-portal) .portal-card,
+.app-shell:not(.student-portal) .dashboard-card,
+.app-shell:not(.student-portal) .card {
+  background: rgba(15, 23, 42, 0.72) !important;
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(148, 163, 184, 0.18) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  color: #f8fafc;
+}
+
+.app-shell:not(.student-portal) .MuiCard-root {
+  background: rgba(15, 23, 42, 0.72) !important;
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(148, 163, 184, 0.18) !important;
+  color: #f8fafc;
+}
+
+.MuiPaper-root:not(.MuiDialog-paper):not(.MuiMenu-paper):not(.MuiAutocomplete-paper) {
+  background-image: none;
+}
+
+/* Dashboard layout */
+.dashboard-layout {
+  background: transparent;
+}
+
+.dashboard-main {
+  color: #f8fafc;
+}
+
+.dashboard-hero {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.85) 0%, rgba(30, 64, 175, 0.9) 50%, rgba(124, 58, 237, 0.75) 100%);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* Tables on dark dashboards only */
+.app-shell:not(.student-portal) .MuiTableHead-root .MuiTableCell-root {
+  color: #e2e8f0;
+}
+
+.app-shell:not(.student-portal) .MuiTableBody-root .MuiTableCell-root {
+  color: #cbd5e1;
+  border-bottom-color: rgba(148, 163, 184, 0.12);
+}
+
+.app-shell:not(.student-portal) .MuiTab-root {
+  color: #94a3b8 !important;
+}
+
+.app-shell:not(.student-portal) .MuiTab-root.Mui-selected {
+  color: #60a5fa !important;
+}
+
+/* Homepage */
+.homepage-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.homepage-glass-card {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.homepage-glass-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(96, 165, 250, 0.4);
+  box-shadow: 0 28px 70px rgba(37, 99, 235, 0.25);
+}
