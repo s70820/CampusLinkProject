@@ -8,6 +8,9 @@ COPY CampusLinkBackend/pom.xml CampusLinkBackend/pom.xml
 COPY CampusLinkBackend/src CampusLinkBackend/src
 COPY CampusLinkFrontend/campuslink-frontend CampusLinkFrontend/campuslink-frontend
 
+# React must call same-origin /api on Kerocket (not localhost from committed .env files).
+RUN printf "PUBLIC_URL=\nREACT_APP_API_URL=\n" > /build/CampusLinkFrontend/campuslink-frontend/.env.production.local
+
 WORKDIR /build/CampusLinkBackend
 RUN mvn -B -DskipTests -Pwith-frontend package
 
